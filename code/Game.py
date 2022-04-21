@@ -1,11 +1,8 @@
 import os
-import pygame
-
-class Settings(object):
-    window_width = 800
-    window_height = 600    
-    caption = "Game"
-    fps = 60
+import pygame, sys
+import Settings
+from debug import debug
+from level import *
 
 class Game(object):  # klasse game
     def __init__(self, ) -> None:
@@ -15,12 +12,21 @@ class Game(object):  # klasse game
         pygame.display.set_caption(Settings.caption)
         self.screen = pygame.display.set_mode((Settings.window_width, Settings.window_height))
         self.clock = pygame.time.Clock()
-        
+        self.level = level()
+
     def run(self):  # beim spiel start ausführen
         self.running = True
         while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            self.screen.fill("black") 
+            debug("hello;)")
+            self.level.run()
+            
+            pygame.display.update()
             self.clock.tick(Settings.fps)
-        pygame.quit()
 
 if __name__ == '__main__':  # game start
     game = Game()
