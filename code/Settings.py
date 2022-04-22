@@ -1,6 +1,6 @@
 window_width = 1200
 window_height = 800    
-caption = "Game"
+caption = "Rising of the Farmer"
 fps = 60
 TILE_SIZE = 64
 

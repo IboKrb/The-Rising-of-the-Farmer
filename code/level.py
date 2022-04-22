@@ -23,7 +23,8 @@ class level:
                 y = row_index * TILE_SIZE
                 if col == 'x':
                     Tile((x,y),[self.visible_sprites])
+                if col == 'p':
+                    Player((x,y),[self.visible_sprites])
 
     def run(self):
-        #update 
-        pass
+        self.visible_sprites.draw(self.display_surface)

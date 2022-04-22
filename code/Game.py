@@ -3,6 +3,7 @@ import pygame, sys
 import Settings
 from debug import debug
 from level import *
+from tile import *
 
 class Game(object):  # klasse game
     def __init__(self, ) -> None:
@@ -21,12 +22,16 @@ class Game(object):  # klasse game
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            self.screen.fill("black") 
-            debug("hello;)")
+            
+            self.draw()
             self.level.run()
             
             pygame.display.update()
             self.clock.tick(Settings.fps)
+
+    def draw(self):  
+        self.screen.fill("Black")
+        debug("hello;)")
 
 if __name__ == '__main__':  # game start
     game = Game()
