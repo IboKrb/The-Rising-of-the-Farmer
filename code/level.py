@@ -11,7 +11,7 @@ class level:
         self.display_surface = pygame.display.get_surface()
         
         #sprite groups
-        self.visible_sprites = pygame.sprite.Group()
+        self.visible_sprites = YsortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
     
         #sprite setup
@@ -25,9 +25,18 @@ class level:
                 if col == 'x':
                     Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
                 if col == 'p':
-                   self.player = Player((x,y),[self.visible_sprites])
+                   self.player = Player((x,y),[self.visible_sprites],self.obstacle_sprites)
 
     def run(self):
         self.visible_sprites.draw(self.display_surface)
         self.visible_sprites.update()
         debug(self.player.direction)
+
+class YsortCameraGroup(pygame.sprite.Group):
+    def __init__(self):
+        super().__init__()
+        self.display_surface = pygame.display.get_surface()
+    
+    def custom_draw(self):
+        for sprite in self.sprites():
+            self.display_surface.blit(sprite.image,sprite.rect)
