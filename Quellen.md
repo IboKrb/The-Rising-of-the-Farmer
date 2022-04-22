@@ -6,5 +6,6 @@ https://thkaspar.itch.io/tth-animals
 https://pixelplant.itch.io/chicken-sprite-sheet
 https://elthen.itch.io/2d-pixel-art-cat-sprites
 https://elthen.itch.io/2d-pixel-art-fox-sprites
-
+https://dj8power.itch.io/desert-tilemap
+https://beyonderboy.itch.io/desert-map-tileset-16x16
 
