@@ -7,3 +7,4 @@ class Tile(pygame.sprite.Sprite):
         self.image = pygame.image.load("./graphics/stone.png").convert_alpha()
         self.image =pygame.transform.scale(self.image,(TILE_SIZE,TILE_SIZE)) 
         self.rect = self.image.get_rect(topleft = pos)
+        self.hitbox = self.rect.inflate(0,-20)
