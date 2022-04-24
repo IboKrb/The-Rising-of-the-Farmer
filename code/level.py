@@ -1,8 +1,10 @@
 import pygame
 from Settings import *
-from tile import Tile
+from tile import *
 from player import Player
 from debug import debug
+from support import *
+from random import choice
 class level:
     def __init__(self):
         
@@ -17,16 +19,34 @@ class level:
         self.create_map()
 
     def create_map(self):
+        layout = {
+            "boundary": import_csv_layout("./map/Map_ausen.csv"),
+            "objects": import_csv_layout("./map/Map_BAUMHaus.csv")
+
+        }
+        graphics = {
+            "objects": import_folder_layout("./graphics/Tiled/Tilesets"),
+        }
+
+        for style,layout in layout.items():
+            for row_index,row in enumerate(layout):
+                for col_index,col in enumerate(row):
+                    if col !=  '-1':
+                        x = col_index * TILE_SIZE 
+                        y = row_index * TILE_SIZE 
+                        x += 150
+                        y += 50 
+                        if style == "boundary":
+                            Tile((x,y),[self.obstacle_sprites],"invisible")
+                        if style == "baumhaus":
+                            surf = graphics["objects"][int(col)]
+                            Tile((x,y),[self.visible_sprites,self.obstacle_sprites],"object",surf)
         """"
-        for row_index,row in enumerate(WORLD_MAP):
-            for col_index,col in enumerate(row):
-                x = col_index * TILE_SIZE
-                y = row_index * TILE_SIZE
                 if col == 'x':
                     Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
                 if col == 'p':
         """
-        self.player = Player((800,600),[self.visible_sprites],self.obstacle_sprites)
+        self.player = Player((1000,800),[self.visible_sprites],self.obstacle_sprites)
 
     def run(self):
         self.visible_sprites.custom_draw(self.player)
@@ -43,7 +63,7 @@ class YsortCameraGroup(pygame.sprite.Group):
 
         #creating the floor
         self.floor_surface = pygame.image.load("./graphics/Tiled/Map.png").convert()
-        self.floor_rect = self.floor_surface.get_rect(topleft =	(0,0))
+        self.floor_rect = self.floor_surface.get_rect(topleft =	(TILE_SIZE,TILE_SIZE))
     
     def custom_draw(self,player):
 

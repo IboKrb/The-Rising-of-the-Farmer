@@ -11,7 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.hitbox = self.rect.inflate(0,-30)
 
         self.direction = pygame.math.Vector2()
-        self.speed = 5
+        self.speed = 20
         self.obstacle_sprites = obstacle_sprites
     
     def input(self):
