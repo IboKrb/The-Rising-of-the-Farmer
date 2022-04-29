@@ -12,7 +12,7 @@ class level:
         self.display_surface = pygame.display.get_surface()
         
         #sprite groups
-        self.visible_sprites = YsortCameraGroup()
+        self.visible_sprites = Camera()
         self.obstacle_sprites = pygame.sprite.Group()
     
         #sprite setup
@@ -52,7 +52,7 @@ class level:
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
 
-class YsortCameraGroup(pygame.sprite.Group):
+class Camera(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
         self.display_surface = pygame.display.get_surface()
