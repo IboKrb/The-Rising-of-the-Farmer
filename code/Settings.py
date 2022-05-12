@@ -3,6 +3,7 @@ window_height = 800
 caption = "Rising of the Farmer"
 fps = 60
 TILE_SIZE = 46
+player_size = 72
 WORLD_MAP = [
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],
 ['x',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','x'],
