@@ -51,6 +51,7 @@ class level:
     def run(self):
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
+        debug(self.player.status)
 
 class Camera(pygame.sprite.Group):
     def __init__(self):
