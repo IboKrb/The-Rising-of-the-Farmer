@@ -1,6 +1,7 @@
 import pygame
 from Settings import *
 from level import *
+from support import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites):
@@ -11,24 +12,86 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-30)
 
+        self.import_player_assets()
+        self.status= "down"
+
         self.direction = pygame.math.Vector2()
-        self.speed = 50
+        self.speed = 10
+
+        self.frame_index = 0
+        self.animation_speed = 0.15
+
+        self.harvesting = False
+        self.harvest_cooldown = 400
+        self.harvest_time = None
+
         self.obstacle_sprites = obstacle_sprites
-        
+
+    def import_player_assets(self):
+        character_path= "./graphics/spritemaps/Char/"
+        self.animations = {"up":[],"down":[],"left":[],"right":[],"upidle":[],"downidle":[],"leftidle":[],"rightidle":[]}
+
+        for animation in self.animations.keys():
+            full_path = character_path+animation
+            self.animations[animation] = import_folder_layout(full_path)
+
     def input(self):
-        pressed = pygame.key.get_pressed()
+        pressed = pygame.key.get_pressed() 
         if pressed[pygame.K_LEFT]:
             self.direction.x = -1
+            self.status = "left"
         elif pressed[pygame.K_RIGHT]:
             self.direction.x = 1
+            self.status	= "right"
         elif pressed[pygame.K_UP]:
             self.direction.y = -1
+            self.status = "up"
         elif pressed[pygame.K_DOWN]:
             self.direction.y = 1
+            self.status = "down"
         else:
             self.direction.x = 0
             self.direction.y = 0
+
+        #harvesting
+        if pressed[pygame.K_SPACE]and not self.harvesting:
+            self.harvesting = True
+            self.harvest_time = pygame.time.get_ticks()
+            print("harvesting")
+        
+        #feeding
+        if pressed[pygame.K_f]and not self.harvesting:
+            self.harvesting = True
+            print("feeding")
+        #catch
+        if pressed[pygame.K_c]and not self.harvesting:
+            self.harvesting = True
+            print("catch")
     
+    def get_status(self):
+        if self.direction.x == 0 and self.direction.y == 0:
+            if not "idle" in self.status and not "harvesting"in self.status:
+                self.status = self.status + "idle"
+        
+        if self.harvesting:
+            self.direction.x = 0
+            self.direction.y = 0
+            if not "harvesting" in self.status:
+                if "idle" in self.status:
+                    self.status = self.status.replace("idle","harvesting ")
+                else:
+                    self.status = self.status + "harvesting"
+        else:
+            if "harvesting" in self.status:
+                self.status = self.status.replace("harvesting"," ")
+
+    def cooldonws(self):
+        current_Time = pygame.time.get_ticks()	
+
+        if self.harvesting:
+            if current_Time - self.harvest_time >= self.harvest_cooldown:
+                self.harvesting = False
+                 
     def move(self):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
@@ -56,10 +119,22 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     elif self.direction.y < 0: #moving up
                         self.hitbox.top = sprite.hitbox.bottom
-                  
+
+    def animate(self):
+        animation = self.animations[self.status]
+        self.frame_index += self.animation_speed
+        if self.frame_index >= len(animation):
+                self.frame_index = 0
+        self.image = animation[int(self.frame_index)]
+        self.rect = self.image.get_rect(center = self.hitbox.center)
+
     def update(self):
         self.input()
         self.move()
+        self.cooldonws()
+        self.get_status()
+        self.animate()
+
         
     def run(self):
         level.visible_sprites.draw(self.display_surface)
