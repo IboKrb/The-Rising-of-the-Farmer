@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites):
         super().__init__(groups)
        # self.image = pygame.image.load("./graphics/Player.png").convert_alpha()
-        self.image = pygame.image.load("./graphics/spritemaps/Char/Down/sprite1.png").convert_alpha()
+        self.image = pygame.image.load("./graphics/spritemaps/Char/down/sprite1.png").convert_alpha()
         self.image =pygame.transform.scale(self.image,(player_size,player_size))
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-30)
