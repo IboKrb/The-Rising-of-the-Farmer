@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.status= "down"
 
         self.direction = pygame.math.Vector2()
-        self.speed = 10
+        self.speed = 5
 
         self.frame_index = 0
         self.animation_speed = 0.15
@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
 
     def import_player_assets(self):
         character_path= "./graphics/spritemaps/Char/"
-        self.animations = {"up":[],"down":[],"left":[],"right":[],"upidle":[],"downidle":[],"leftidle":[],"rightidle":[]}
+        self.animations = {"up":[],"down":[],"left":[],"right":[],"upidle":[],"downidle":[],"leftidle":[],"rightidle":[],"downharvesting":[]}
 
         for animation in self.animations.keys():
             full_path = character_path+animation
@@ -78,12 +78,12 @@ class Player(pygame.sprite.Sprite):
             self.direction.y = 0
             if not "harvesting" in self.status:
                 if "idle" in self.status:
-                    self.status = self.status.replace("idle","harvesting ")
+                    self.status = self.status.replace("idle","harvesting")
                 else:
                     self.status = self.status + "harvesting"
         else:
             if "harvesting" in self.status:
-                self.status = self.status.replace("harvesting"," ")
+                self.status = self.status.replace("harvesting","idle")
 
     def cooldonws(self):
         current_Time = pygame.time.get_ticks()	
