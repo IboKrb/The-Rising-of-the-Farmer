@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
 
     def import_player_assets(self):
         character_path= "./graphics/spritemaps/Char/"
-        self.animations = {"up":[],"down":[],"left":[],"right":[],"upidle":[],"downidle":[],"leftidle":[],"rightidle":[],"downharvesting":[]}
+        self.animations = {"up":[],"down":[],"left":[],"right":[],"upidle":[],"downidle":[],"leftidle":[],"rightidle":[],"downharvesting":[],"upharvesting":[],"rightharvesting":[],"leftharvesting":[]}
 
         for animation in self.animations.keys():
             full_path = character_path+animation
