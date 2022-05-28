@@ -5,6 +5,9 @@ from player import Player
 from debug import debug
 from support import *
 from random import choice
+from Animals import Animals
+from random import *
+
 class level:
     def __init__(self):
         
@@ -17,6 +20,13 @@ class level:
     
         #sprite setup
         self.create_map()
+        
+        self.spawn_x = 0
+        self.spawn_y = 0
+
+    def random_spawn(self):
+        self.spawn_x = randint(1200,3000)
+        self.spawn_y = randint(1200,3000)
 
     def create_map(self):
         layout = {
@@ -38,17 +48,22 @@ class level:
                         y += 50 
                         if style == "boundary":
                             Tile((x,y),[self.obstacle_sprites],"invisible")
-                        if style == "baumhaus":
-                            surf = graphics["objects"][int(col)]
-                            Tile((x,y),[self.visible_sprites,self.obstacle_sprites],"object",surf)
+                    
         """"
                 if col == 'x':
                     Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
                 if col == 'p':
         """
         self.player = Player((1000,800),[self.visible_sprites],self.obstacle_sprites)
+        self.random_spawn()
+        self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
+        self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)   
+        self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
+        
+
 
     def run(self):
+        self.visible_sprites.custom_draw(self.animal)
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
         debug(self.player.status)

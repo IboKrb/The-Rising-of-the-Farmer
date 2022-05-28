@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
        # self.image = pygame.image.load("./graphics/Player.png").convert_alpha()
         self.image = pygame.image.load("./graphics/spritemaps/Char/down/sprite1.png").convert_alpha()
-        self.image =pygame.transform.scale(self.image,(player_size,player_size))
+        self.image =pygame.transform.scale(self.image,(Player_size,Player_size))
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-30)
 
@@ -16,10 +16,10 @@ class Player(pygame.sprite.Sprite):
         self.status= "down"
 
         self.direction = pygame.math.Vector2()
-        self.speed = 5
+        self.speed = 30
 
         self.frame_index = 0
-        self.animation_speed = 0.15
+        self.animation_speed = 0.40
 
         self.harvesting = False
         self.harvest_cooldown = 400
