@@ -50,8 +50,8 @@ class Animals(pygame.sprite.Sprite):
         
     def import_animal(self):
         self.random_animal()
-        self.random_zahl= randint(0,13)
-        self.animal_path= self.animals_path[self.random_zahl]
+        self.animal_number= randint(0,13)
+        self.animal_path= self.animals_path[self.animal_number]
         self.animations = {"up":[],"down":[],"left":[],"right":[],"idle":[]}
         
         for animation in self.animations.keys():
@@ -69,7 +69,7 @@ class Animals(pygame.sprite.Sprite):
             self.zahlrauf = 0
             
     def angriff(self):
-        #if self.animal_path == "./graphics/sprites_tiere/Baren/Braun/":
+        #if self.animal_number 
         pass
 
     def random_move(self):
@@ -118,11 +118,11 @@ class Animals(pygame.sprite.Sprite):
         
         #self.image =pygame.transform.scale(self.image,(TILE_SIZE,TILE_SIZE))
 
-        if self.random_zahl >= 11 :
+        if self.animal_number >= 11 :
             self.image =pygame.transform.scale(self.image,(self.small_tile_size,self.small_tile_size))
-        elif self.random_zahl <= 7:
+        elif self.animal_number <= 7:
             self.image = pygame.transform.scale(self.image,(TILE_SIZE,TILE_SIZE))
-        elif self.random_zahl == 8 or 9 or 10:
+        elif self.animal_number == 8 or 9 or 10:
             self.image = pygame.transform.scale(self.image,(self.big_tile_size,self.big_tile_size))
 
 
