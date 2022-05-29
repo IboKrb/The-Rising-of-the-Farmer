@@ -2,6 +2,7 @@ import pygame
 from Settings import *
 from level import *
 from support import *
+from Animals import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites):
@@ -12,14 +13,18 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-30)
 
+        #
+        # self.animale_sprites=pygame.sprite.Group()
+        #self.animals = Animals(pos, groups, self.animale_sprites)
+
         self.import_player_assets()
         self.status= "down"
 
         self.direction = pygame.math.Vector2()
-        self.speed = 30
+        self.speed = 20
 
         self.frame_index = 0
-        self.animation_speed = 0.40
+        self.animation_speed = 0.10
 
         self.harvesting = False
         self.harvest_cooldown = 400
@@ -120,6 +125,10 @@ class Player(pygame.sprite.Sprite):
                     elif self.direction.y < 0: #moving up
                         self.hitbox.top = sprite.hitbox.bottom
 
+        #overlap_sprites= pygame.sprite.spritecollide(self.obstacle_sprites,self.animals,True)    
+        #if overlap_sprites:
+         #   print("hit")
+
     def animate(self):
         animation = self.animations[self.status]
         self.frame_index += self.animation_speed
@@ -137,5 +146,5 @@ class Player(pygame.sprite.Sprite):
 
         
     def run(self):
-        level.visible_sprites.draw(self.display_surface)
-        level.visible_sprites.update()
+        Level.visible_sprites.draw(self.display_surface)
+        Level.visible_sprites.update()

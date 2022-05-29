@@ -8,7 +8,7 @@ from random import choice
 from Animals import Animals
 from random import *
 
-class level:
+class Level:
     def __init__(self):
         
         #get the display surface
@@ -18,20 +18,19 @@ class level:
         self.visible_sprites = Camera()
         self.obstacle_sprites = pygame.sprite.Group()
     
-        #sprite setup
+         #sprite setup
         self.create_map()
-        
+
         self.spawn_x = 0
         self.spawn_y = 0
 
     def random_spawn(self):
-        self.spawn_x = randint(1200,3000)
-        self.spawn_y = randint(1200,3000)
+        self.spawn_x = randint(1500,3500)
+        self.spawn_y = randint(800,4000)
 
     def create_map(self):
         layout = {
             "boundary": import_csv_layout("./map/Map_ausen.csv"),
-            "objects": import_csv_layout("./map/Map_BAUMHaus.csv")
 
         }
         graphics = {
@@ -55,18 +54,26 @@ class level:
                 if col == 'p':
         """
         self.player = Player((1000,800),[self.visible_sprites],self.obstacle_sprites)
-        self.random_spawn()
-        self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
-        self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)   
-        self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
+        self.random_animal_spawn()
+        self.collision()
+
         
+    def random_animal_spawn(self):
+        for i in range(0,50):
+            self.random_spawn()
+            self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
 
-
+    def collision(self):
+        if pygame.sprite.collide_rect(self.player,self.animal):
+            print("HAAaaa")
+            
     def run(self):
         self.visible_sprites.custom_draw(self.animal)
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
         debug(self.player.status)
+    
+
 
 class Camera(pygame.sprite.Group):
     def __init__(self):

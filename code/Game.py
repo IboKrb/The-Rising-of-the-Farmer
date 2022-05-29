@@ -6,14 +6,14 @@ from level import *
 
 
 class Game(object):  # klasse game
-    def __init__(self, ) -> None:
+    def __init__(self ) -> None:
         os.environ['SDL_VIDEO_WINDOW_POS'] = "100,100"
 
         pygame.init()
         pygame.display.set_caption(Settings.caption)
         self.screen = pygame.display.set_mode((Settings.window_width, Settings.window_height))
         self.clock = pygame.time.Clock()
-        self.level = level()
+        self.Level = Level()
 
     def run(self):  # beim spiel start ausführen
         self.running = True
@@ -21,10 +21,10 @@ class Game(object):  # klasse game
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    sys.exit()
+                    sys.exit()  
 
             self.draw()
-            self.level.run()
+            self.Level.run()
             
             pygame.display.update()
             self.clock.tick(Settings.fps)

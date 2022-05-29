@@ -10,93 +10,104 @@ class Animals(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load("./graphics/sprites_tiere/Schaf/Braun/down/sprite1.png").convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0,-30)
+        self.hitbox = self.rect.inflate(0,0)
 
-        self.import_animal()
         self.status= "down"
         
-        self.fram_index = 0
+        self.direction = pygame.math.Vector2()
 
-        self.speed_y= 0
-        self.speed_x = 0
+        self.fram_index = 0
+        self.import_animal()
+
+        self.speed= 1
+
+        self.small_tile_size = 26
+        self.big_tile_size = 65
+
         
         self.zahlrauf = 0
         self.animation_speed = 0.05
         
         self.randomzahl = 0
         
-       
-        
         self.obstacle_sprites = obstacle_sprites
-
+    
+    def random_animal(self):
+        self.animals_path = ["./graphics/sprites_tiere/Schaf/Braun/",
+        "./graphics/sprites_tiere/Schaf/Weiss/",
+        "./graphics/sprites_tiere/Wolf/Braun/",
+        "./graphics/sprites_tiere/Wolf/BraunWeiss/",
+        "./graphics/sprites_tiere/Wolf/Dunkelgrau/",
+        "./graphics/sprites_tiere/Wolf/Grau/",
+        "./graphics/sprites_tiere/Wolf/Schwarz/",
+        "./graphics/sprites_tiere/Wolf/Weiss/",
+        "./graphics/sprites_tiere/Baren/Hellbraun/",
+        "./graphics/sprites_tiere/Baren/Braun/",
+        "./graphics/sprites_tiere/Baren/Schwarz/",
+        "./graphics/sprites_tiere/Hamster/Grau/",
+        "./graphics/sprites_tiere/Hamster/weiß/",
+        "./graphics/sprites_tiere/Hamster/Braun/"]
         
     def import_animal(self):
-        animal_path= "./graphics/sprites_tiere/Schaf/Braun/"
+        self.random_animal()
+        self.random_zahl= randint(0,13)
+        self.animal_path= self.animals_path[self.random_zahl]
         self.animations = {"up":[],"down":[],"left":[],"right":[],"idle":[]}
         
         for animation in self.animations.keys():
-            full_path = animal_path+animation
+            full_path = self.animal_path+animation
             self.animations[animation] = import_folder_layout(full_path)      
             
-                
+
     def zahlen(self):
         self.zahlrauf += 1
     
     def random_choice(self):
         self.zahlen()
-        if self.zahlrauf == 30:
-            self.randomzahl = randint(1,100)
+        if self.zahlrauf == 60:
+            self.randomzahl = randint(1,150)
             self.zahlrauf = 0
             
+    def angriff(self):
+        #if self.animal_path == "./graphics/sprites_tiere/Baren/Braun/":
+        pass
 
     def random_move(self):
         self.random_choice()
         
         if self.randomzahl <= 10 :
+            self.direction.x = 1
             self.status = "right"
-            self.speed_x = 1
- 
 
-            
         elif self.randomzahl >= 11 and self.randomzahl <= 20 :
+            self.direction.x = -1
             self.status = "left"
-            self.speed_x = -1
     
-
-        
         elif self.randomzahl  >= 21 and self.randomzahl <= 30 :
+            self.direction.y = 1
             self.status = "down"
-            self.speed_y = 1
-  
-            
+       
         elif self.randomzahl >= 31 and self.randomzahl <= 40 :
+            self.direction.y = -1
             self.status = "up"
-            self.speed_y = -1
             
-        elif self.randomzahl >= 41 and self.randomzahl <= 100:
+        elif self.randomzahl >= 41 and self.randomzahl <= 150:
             self.status = "idle"
-            self.speed_y = 0
-            self.speed_x = 0
+            self.direction.x = 0
+            self.direction.y = 0
 
 
 
     def movement(self):
         self.random_move()
-        if self.status == "left" :
-            self.rect.move_ip(self.speed_x, 0)
-            self.collision("horizontal")
-        if self.status == "right"  :
-            self.rect.move_ip(self.speed_x,0)
-            self.collision("horizontal")
-        if self.status == "down" :
-            self.rect.move_ip(0, self.speed_y)
-            self.collision("vertical")
-        if self.status == "up" :
-            self.rect.move_ip(0,self.speed_y)
-            self.collision("vertical")
+        if self.direction.magnitude() != 0:
+            self.direction = self.direction.normalize()
+        self.hitbox.x += self.direction.x * self.speed
+        self.collision("horizontal")
+        self.hitbox.y += self.direction.y * self.speed
+        self.collision("vertical")
+        self.rect.center = self.hitbox.center
 
-
-    
 
     def animate(self):
         animation = self.animations[self.status]
@@ -104,30 +115,41 @@ class Animals(pygame.sprite.Sprite):
         if self.fram_index >= len(animation):
                 self.fram_index = 0
         self.image = animation[int(self.fram_index)]
-        self.image =pygame.transform.scale(self.image,(TILE_SIZE,TILE_SIZE))
+        
+        #self.image =pygame.transform.scale(self.image,(TILE_SIZE,TILE_SIZE))
+
+        if self.random_zahl >= 11 :
+            self.image =pygame.transform.scale(self.image,(self.small_tile_size,self.small_tile_size))
+        elif self.random_zahl <= 7:
+            self.image = pygame.transform.scale(self.image,(TILE_SIZE,TILE_SIZE))
+        elif self.random_zahl == 8 or 9 or 10:
+            self.image = pygame.transform.scale(self.image,(self.big_tile_size,self.big_tile_size))
+
 
     def collision(self,direction):
+
         if direction == "horizontal":
             for sprite in self.obstacle_sprites:
                 if sprite.hitbox.colliderect(self.hitbox):
-                    if self.speed_x > 0: #moving right
+                    if self.direction.x > 0: #moving right
                         self.hitbox.right = sprite.hitbox.left
-                    elif self.speed_x.x < 0: #moving left
+                    elif self.direction.x < 0: #moving left
                         self.hitbox.left = sprite.hitbox.right
 
         if direction == "vertical":
             for sprite in self.obstacle_sprites:
                 if sprite.hitbox.colliderect(self.hitbox):
-                    if self.speed_y > 0: #moving down
+                    if self.direction.y > 0: #moving down
                         self.hitbox.bottom = sprite.hitbox.top
-                    elif self.speed_y < 0: #moving up
-                        self.hitbox.top = sprite.hitbox.bottom
-        
+                    elif self.direction.y < 0: #moving up
+                        self.hitbox.top = sprite.hitbox.bottom    
+                        
+
+
     def update(self):
         self.animate()
-       # self.collision()
         self.movement()
     
     def run(self):
-        level.visible_sprites.draw(self.display_surface)
-        level.visible_sprites.update() 
+        Level.visible_sprites.draw(self.display_surface)
+        Level.visible_sprites.update() 
