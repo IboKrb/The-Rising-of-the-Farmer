@@ -17,6 +17,7 @@ class Level:
         #sprite groups
         self.visible_sprites = Camera()
         self.obstacle_sprites = pygame.sprite.Group()
+
     
          #sprite setup
         self.create_map()
@@ -55,7 +56,7 @@ class Level:
         """
         self.player = Player((1000,800),[self.visible_sprites],self.obstacle_sprites)
         self.random_animal_spawn()
-        self.collision()
+        
 
         
     def random_animal_spawn(self):
@@ -63,17 +64,17 @@ class Level:
             self.random_spawn()
             self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
 
-    def collision(self):
-        if pygame.sprite.collide_rect(self.player,self.animal):
-            print("HAAaaa")
             
     def run(self):
-        self.visible_sprites.custom_draw(self.animal)
+        self.visible_sprites.draw(self.animal)
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
-        debug(self.player.status)
-    
+        self.visible_sprites.collision(self.player)
 
+        #self.collision()
+        debug(self.player.status)
+
+                
 
 class Camera(pygame.sprite.Group):
     def __init__(self):
@@ -83,6 +84,7 @@ class Camera(pygame.sprite.Group):
         self.half_height = self.display_surface.get_size()[1]//2
         self.offset = pygame.math.Vector2()
         self.floor_surface = pygame.Surface((self.display_surface.get_size()))
+        self.zahl = 0
 
         #creating the floor
         self.floor_surface = pygame.image.load("./graphics/Tiled/Map.png").convert()
@@ -101,3 +103,18 @@ class Camera(pygame.sprite.Group):
         for sprite in sorted(self.sprites(),key=lambda sprite:sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
+    
+    def draw(self,ani):
+       for sprite in sorted(self.sprites(),key=lambda sprite:sprite.rect.centery):
+            offset_pos = sprite.rect.topleft - self.offset
+            self.display_surface.blit(sprite.image,offset_pos)
+
+    def collision(self,player):
+        self.object = self.sprites()
+        for i, object1 in enumerate(self.object):
+            for object2 in self.object[i+1:]:
+                if pygame.sprite.collide_rect(object1, object2):
+                    if player == object1 or player == object2:
+                        self.zahl += 1
+                        print("collision", self.zahl)
+                    

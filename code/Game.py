@@ -30,7 +30,7 @@ class Game(object):  # klasse game
             self.clock.tick(Settings.fps)
 
     def draw(self):  
-        self.screen.fill("Black")
+        self.screen.fill("lightBlue")
         
 
 if __name__ == '__main__':  # game start

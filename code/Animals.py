@@ -122,7 +122,7 @@ class Animals(pygame.sprite.Sprite):
             self.image =pygame.transform.scale(self.image,(self.small_tile_size,self.small_tile_size))
         elif self.animal_number <= 7:
             self.image = pygame.transform.scale(self.image,(TILE_SIZE,TILE_SIZE))
-        elif self.animal_number == 8 or 9 or 10:
+        elif self.animal_number == 8 or 9 or 10 or 11:
             self.image = pygame.transform.scale(self.image,(self.big_tile_size,self.big_tile_size))
 
 
@@ -143,7 +143,8 @@ class Animals(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     elif self.direction.y < 0: #moving up
                         self.hitbox.top = sprite.hitbox.bottom    
-                        
+
+       
 
 
     def update(self):
@@ -153,3 +154,4 @@ class Animals(pygame.sprite.Sprite):
     def run(self):
         Level.visible_sprites.draw(self.display_surface)
         Level.visible_sprites.update() 
+
