@@ -32,6 +32,8 @@ class Level:
     def create_map(self):
         layout = {
             "boundary": import_csv_layout("./map/Map_ausen.csv"),
+            "baumhaus": import_csv_layout("./map/Map_BAUMHaus.csv")
+
 
         }
         graphics = {
@@ -42,12 +44,16 @@ class Level:
             for row_index,row in enumerate(layout):
                 for col_index,col in enumerate(row):
                     if col !=  '-1':
-                        x = col_index * TILE_SIZE 
-                        y = row_index * TILE_SIZE 
-                        x += 150
-                        y += 50 
+                        x = col_index * 55
+                        y = row_index * 55
+                        x += 200
+                        y += 100
+
                         if style == "boundary":
                             Tile((x,y),[self.obstacle_sprites],"invisible")
+
+                        #if style == "baumhaus":
+                        #   Tile((x,y),[self.obstacle_sprites],"invisible")
                     
         """"
                 if col == 'x':
@@ -88,6 +94,7 @@ class Camera(pygame.sprite.Group):
 
         #creating the floor
         self.floor_surface = pygame.image.load("./graphics/Tiled/Map.png").convert()
+        self.floor_surface = pygame.transform.scale(self.floor_surface,(5800,5800))
         self.floor_rect = self.floor_surface.get_rect(topleft =	(TILE_SIZE,TILE_SIZE))
     
     def custom_draw(self,player):
