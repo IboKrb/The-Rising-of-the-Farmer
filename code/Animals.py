@@ -13,7 +13,7 @@ class Animals(pygame.sprite.Sprite):
         self.hitbox = self.rect.inflate(0,0)
 
         self.status= "down"
-        
+         
         self.direction = pygame.math.Vector2()
 
         self.fram_index = 0
@@ -24,12 +24,13 @@ class Animals(pygame.sprite.Sprite):
         self.small_tile_size = 26
         self.big_tile_size = 65
 
-        
+        self.tamet = False
+
         self.zahlrauf = 0
         self.animation_speed = 0.05
         
         self.randomzahl = 0
-        
+        self.dir_player = pygame.math.Vector2()
         self.obstacle_sprites = obstacle_sprites
     
     def random_animal(self):
@@ -96,9 +97,7 @@ class Animals(pygame.sprite.Sprite):
             self.direction.x = 0
             self.direction.y = 0
 
-
-
-    def movement(self):
+    def move(self):
         self.random_move()
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
@@ -107,7 +106,22 @@ class Animals(pygame.sprite.Sprite):
         self.hitbox.y += self.direction.y * self.speed
         self.collision("vertical")
         self.rect.center = self.hitbox.center
+    
+    def movement(self):
+        if self.tamet == False:
+            self.move()
+        else:
+            self.move_to_player()
 
+    def move_to_player(self):
+        if self.dir_player.x > self.direction.x:
+            self.direction.x -= 15
+        elif self.dir_player.x < self.direction.x:
+            self.direction.x += 15
+        if self.dir_player.y > self.direction.y:
+            self.direction.y -= 15
+        elif self.dir_player.y < self.direction.y:
+            self.direction.y += 15
 
     def animate(self):
         animation = self.animations[self.status]

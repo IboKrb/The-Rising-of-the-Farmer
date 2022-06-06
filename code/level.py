@@ -83,7 +83,7 @@ class Spiel:
         self.visible_sprites.draw(self.farm_spawn)
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
-        self.visible_sprites.collision(self.player,self.animal)
+        self.visible_sprites.collision(self.player)
 
         #self.collision()
         debug(self.player.status)
@@ -99,7 +99,7 @@ class Camera(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
         self.floor_surface = pygame.Surface((self.display_surface.get_size()))
         self.zahl = 0
-
+        self.dirvect = pygame.math.Vector2()
         #creating the floor
         self.floor_surface = pygame.image.load("./graphics/Tiled/Map.png").convert()
         self.floor_surface = pygame.transform.scale(self.floor_surface,(5800,5800))
@@ -124,25 +124,25 @@ class Camera(pygame.sprite.Group):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
 
-    def collision(self,player,animal):
+    def collision(self,player):
         self.object = self.sprites()        
         for i, object1 in enumerate(self.object):
             for object2 in self.object[i+1:]:
                 if pygame.sprite.collide_rect(object1, object2):
                     if isinstance(object1, Player) and isinstance(object2,  Animals):
-                        self.zahl+=1
-                        print("collision tier",self.zahl)
+                        if player.anzahl_obst >= 1 and player.feeding:
+                            self.zahl+=1
+                            print("collision tier",self.zahl)
+                            player.anzahl_obst-=1
+                            print("anzahl obst",player.anzahl_obst)
+                            object2.tamet = True
+                            object2.dir_player = player.direction
+
                     if isinstance(object1, Player) and isinstance(object2, Harvest):
                         if player.havest and object2.fram_index >= 3:
                             player.anzahl_obst+=1
-                            print("collision",player.anzahl_obst)
+                            print("anzahl obst",player.anzahl_obst)
                             object2.fram_index = 0
                             player.havest = False
-                        
-                     
-                    # if player == object1 or player == object2 and  animal == object2 or animal == object1:
-                        #self.zahl += 1
-                        #print("collision", self.zahl)
-                        #print(type(object1),type(object2))
-                    
+
                     

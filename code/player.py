@@ -24,11 +24,12 @@ class Player(pygame.sprite.Sprite):
         self.anzahl_obst = 0
 
         self.frame_index = 0
-        self.animation_speed = 0.10
+        self.animation_speed = 0.20
         self.havest = False
         self.harvesting = False
-        self.harvest_cooldown = 2000
-        self.harvest_time = None
+        self.cooldown = 2000
+        self.time = None
+        self.feeding = False
 
         self.obstacle_sprites = obstacle_sprites
 
@@ -36,7 +37,8 @@ class Player(pygame.sprite.Sprite):
         character_path= "./graphics/spritemaps/Char/"
         self.animations = {"up":[],"down":[],"left":[],"right":[],
         "upidle":[],"downidle":[],"leftidle":[],"rightidle":[],
-        "downharvesting":[],"upharvesting":[],"rightharvesting":[],"leftharvesting":[]}
+        "downharvesting":[],"upharvesting":[],"rightharvesting":[],"leftharvesting":[],
+        "downfeeding":[],"upfeeding":[],"rightfeeding":[],"leftfeeding":[]}
 
         for animation in self.animations.keys():
             full_path = character_path+animation
@@ -63,14 +65,15 @@ class Player(pygame.sprite.Sprite):
         #harvesting
         if pressed[pygame.K_SPACE]and not self.harvesting:
             self.harvesting = True
-            self.harvest_time = pygame.time.get_ticks()   
+            self.time = pygame.time.get_ticks()   
             self.havest = True 
             
             print("harvesting")
         
         #feeding
-        if pressed[pygame.K_f]and not self.harvesting:
-            self.harvesting = True
+        if pressed[pygame.K_f]and not self.feeding:
+            self.feeding = True
+            self.time = pygame.time.get_ticks()   
             print("feeding")
         #catch
         if pressed[pygame.K_c]and not self.harvesting:
@@ -85,6 +88,7 @@ class Player(pygame.sprite.Sprite):
         if self.harvesting:
             self.direction.x = 0
             self.direction.y = 0
+
             if not "harvesting" in self.status:
                 if "idle" in self.status:
                     self.status = self.status.replace("idle","harvesting")
@@ -94,12 +98,37 @@ class Player(pygame.sprite.Sprite):
             if "harvesting" in self.status:
                 self.status = self.status.replace("harvesting","idle")
 
+        if self.feeding:
+            self.direction.x = 0
+            self.direction.y = 0
+
+            if self.status == "downidle":
+                self.status = self.status.replace("downidle","downfeeding")
+            elif self.status == "upidle":
+                self.status = "upfeeding"
+            elif self.status == "leftidle":
+                self.status = "leftfeeding"
+            elif self.status == "rightidle":
+                self.status = "rightfeeding"
+
     def cooldonws(self):
         current_Time = pygame.time.get_ticks()	
 
         if self.harvesting:
-            if current_Time - self.harvest_time >= self.harvest_cooldown:
+            if current_Time - self.time >= self.cooldown:
                 self.harvesting = False
+
+        if self.feeding:
+            if current_Time - self.time >= self.cooldown:
+                self.feeding = False
+            if self.status == "downfeeding":
+                self.status = "downidle"
+            elif self.status == "upfeeding":
+                self.status = "upidle"
+            elif self.status == "leftfeeding":
+                self.status = "leftidle"
+            elif self.status == "rightfeeding":
+                self.status = "rightidle"
                  
     def move(self):
         if self.direction.magnitude() != 0:
