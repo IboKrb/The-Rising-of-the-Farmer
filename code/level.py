@@ -84,7 +84,6 @@ class Spiel:
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
         self.visible_sprites.collision(self.player,self.animal)
-        self.visible_sprites.collision_player_harvest(self.player)
 
         #self.collision()
         debug(self.player.status)
@@ -133,16 +132,13 @@ class Camera(pygame.sprite.Group):
                     if isinstance(object1, Player) and isinstance(object2,  Animals):
                         self.zahl+=1
                         print("collision tier",self.zahl)
-
-    def collision_player_harvest(self,player,):
-        self.object = self.sprites()        
-        for i, object1 in enumerate(self.object):
-            for object2 in self.object[i+1:]:
-                if pygame.sprite.collide_rect(object1, object2):
                     if isinstance(object1, Player) and isinstance(object2, Harvest):
-                        player.anzahl_obst+=1
-                        print("collision",player.anzahl_obst)
-                        object2.status = "harvesting"
+                        if player.havest and object2.fram_index >= 3:
+                            player.anzahl_obst+=1
+                            print("collision",player.anzahl_obst)
+                            object2.fram_index = 0
+                            player.havest = False
+                        
                      
                     # if player == object1 or player == object2 and  animal == object2 or animal == object1:
                         #self.zahl += 1

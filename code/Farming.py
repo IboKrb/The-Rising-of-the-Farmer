@@ -59,7 +59,8 @@ class Harvest(pygame.sprite.Sprite):
             self.animation_speed = 0.003
         elif self.randomzahl == 3:
             self.animation_speed = 0.004
-
+            
+        
     def animate(self):
         self.random_geschwindigeit()
         self.fram_index += self.animation_speed

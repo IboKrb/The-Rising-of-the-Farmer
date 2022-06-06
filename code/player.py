@@ -25,9 +25,9 @@ class Player(pygame.sprite.Sprite):
 
         self.frame_index = 0
         self.animation_speed = 0.10
-
+        self.havest = False
         self.harvesting = False
-        self.harvest_cooldown = 400
+        self.harvest_cooldown = 2000
         self.harvest_time = None
 
         self.obstacle_sprites = obstacle_sprites
@@ -63,9 +63,8 @@ class Player(pygame.sprite.Sprite):
         #harvesting
         if pressed[pygame.K_SPACE]and not self.harvesting:
             self.harvesting = True
-            self.harvest_time = pygame.time.get_ticks()    
-            #Camera.collision_player_harvest()
-            
+            self.harvest_time = pygame.time.get_ticks()   
+            self.havest = True 
             
             print("harvesting")
         
