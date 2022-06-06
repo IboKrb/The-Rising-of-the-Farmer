@@ -7,8 +7,9 @@ from support import *
 from random import choice
 from Animals import Animals
 from random import *
+from Farming import Harvest
 
-class Level:
+class Spiel:
     def __init__(self):
         
         #get the display surface
@@ -26,8 +27,8 @@ class Level:
         self.spawn_y = 0
 
     def random_spawn(self):
-        self.spawn_x = randint(1500,3500)
-        self.spawn_y = randint(800,4000)
+        self.spawn_x = randint(1600,4600)
+        self.spawn_y = randint(1000,4000)
 
     def create_map(self):
         layout = {
@@ -53,7 +54,7 @@ class Level:
                             Tile((x,y),[self.obstacle_sprites],"invisible")
 
                         #if style == "baumhaus":
-                        #   Tile((x,y),[self.obstacle_sprites],"invisible")
+                        #   Tile((x,y),[self.visible_sprites],"invisible")
                     
         """"
                 if col == 'x':
@@ -62,20 +63,28 @@ class Level:
         """
         self.player = Player((1000,800),[self.visible_sprites],self.obstacle_sprites)
         self.random_animal_spawn()
-        
+        self.random_flav_spawn()
 
         
     def random_animal_spawn(self):
         for i in range(0,50):
             self.random_spawn()
             self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
+    
+    def random_flav_spawn(self):
+        for i in range(0,200):
+            self.random_spawn()
+            self.farm_spawn = Harvest((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
+    
+    
 
-            
     def run(self):
         self.visible_sprites.draw(self.animal)
+        self.visible_sprites.draw(self.farm_spawn)
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
-        self.visible_sprites.collision(self.player)
+        self.visible_sprites.collision(self.player,self.animal)
+        self.visible_sprites.collision_player_harvest(self.player)
 
         #self.collision()
         debug(self.player.status)
@@ -116,12 +125,28 @@ class Camera(pygame.sprite.Group):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
 
-    def collision(self,player):
-        self.object = self.sprites()
+    def collision(self,player,animal):
+        self.object = self.sprites()        
         for i, object1 in enumerate(self.object):
             for object2 in self.object[i+1:]:
                 if pygame.sprite.collide_rect(object1, object2):
-                    if player == object1 or player == object2:
-                        self.zahl += 1
-                        print("collision", self.zahl)
+                    if isinstance(object1, Player) and isinstance(object2,  Animals):
+                        self.zahl+=1
+                        print("collision tier",self.zahl)
+
+    def collision_player_harvest(self,player,):
+        self.object = self.sprites()        
+        for i, object1 in enumerate(self.object):
+            for object2 in self.object[i+1:]:
+                if pygame.sprite.collide_rect(object1, object2):
+                    if isinstance(object1, Player) and isinstance(object2, Harvest):
+                        player.anzahl_obst+=1
+                        print("collision",player.anzahl_obst)
+                        object2.status = "harvesting"
+                     
+                    # if player == object1 or player == object2 and  animal == object2 or animal == object1:
+                        #self.zahl += 1
+                        #print("collision", self.zahl)
+                        #print(type(object1),type(object2))
+                    
                     

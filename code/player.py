@@ -3,25 +3,25 @@ from Settings import *
 from level import *
 from support import *
 from Animals import *
+from Farming import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites):
         super().__init__(groups)
-       # self.image = pygame.image.load("./graphics/Player.png").convert_alpha()
         self.image = pygame.image.load("./graphics/spritemaps/Char/down/sprite1.png").convert_alpha()
         self.image =pygame.transform.scale(self.image,(Player_size,Player_size))
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-30)
 
-        #
-        # self.animale_sprites=pygame.sprite.Group()
-        #self.animals = Animals(pos, groups, self.animale_sprites)
-
+    
         self.import_player_assets()
         self.status= "down"
 
+        #self.camera = Camera()
+
         self.direction = pygame.math.Vector2()
-        self.speed = 20
+        self.speed = 4
+        self.anzahl_obst = 0
 
         self.frame_index = 0
         self.animation_speed = 0.10
@@ -34,7 +34,9 @@ class Player(pygame.sprite.Sprite):
 
     def import_player_assets(self):
         character_path= "./graphics/spritemaps/Char/"
-        self.animations = {"up":[],"down":[],"left":[],"right":[],"upidle":[],"downidle":[],"leftidle":[],"rightidle":[],"downharvesting":[],"upharvesting":[],"rightharvesting":[],"leftharvesting":[]}
+        self.animations = {"up":[],"down":[],"left":[],"right":[],
+        "upidle":[],"downidle":[],"leftidle":[],"rightidle":[],
+        "downharvesting":[],"upharvesting":[],"rightharvesting":[],"leftharvesting":[]}
 
         for animation in self.animations.keys():
             full_path = character_path+animation
@@ -61,7 +63,10 @@ class Player(pygame.sprite.Sprite):
         #harvesting
         if pressed[pygame.K_SPACE]and not self.harvesting:
             self.harvesting = True
-            self.harvest_time = pygame.time.get_ticks()
+            self.harvest_time = pygame.time.get_ticks()    
+            #Camera.collision_player_harvest()
+            
+            
             print("harvesting")
         
         #feeding
@@ -146,5 +151,5 @@ class Player(pygame.sprite.Sprite):
 
         
     def run(self):
-        Level.visible_sprites.draw(self.display_surface)
-        Level.visible_sprites.update()
+        Spiel.visible_sprites.draw(self.display_surface)
+        Spiel.visible_sprites.update()

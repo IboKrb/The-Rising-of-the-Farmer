@@ -13,7 +13,7 @@ class Game(object):  # klasse game
         pygame.display.set_caption(Settings.caption)
         self.screen = pygame.display.set_mode((Settings.window_width, Settings.window_height))
         self.clock = pygame.time.Clock()
-        self.Level = Level()
+        self.spiel = Spiel()
 
     def run(self):  # beim spiel start ausführen
         self.running = True
@@ -24,7 +24,7 @@ class Game(object):  # klasse game
                     sys.exit()  
 
             self.draw()
-            self.Level.run()
+            self.spiel.run()
             
             pygame.display.update()
             self.clock.tick(Settings.fps)

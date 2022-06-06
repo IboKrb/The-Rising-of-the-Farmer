@@ -152,6 +152,6 @@ class Animals(pygame.sprite.Sprite):
         self.movement()
     
     def run(self):
-        Level.visible_sprites.draw(self.display_surface)
-        Level.visible_sprites.update() 
+        Spiel.visible_sprites.draw(self.display_surface)
+        Spiel.visible_sprites.update() 
 
