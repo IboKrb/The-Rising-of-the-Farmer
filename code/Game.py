@@ -35,10 +35,7 @@ class Game(object):  # klasse game
         self.screen.blit(self.pause_screen, (0, 0))
         pygame.display.flip()
 
-    def input(self):
-        pressed = pygame.key.get_pressed() 
-        if pressed[pygame.K_p]:
-            self.pause_game()
+
 
     def run(self):  # beim spiel start ausführen
         self.running = True

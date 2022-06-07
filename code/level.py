@@ -8,6 +8,7 @@ from random import choice
 from Animals import Animals
 from random import *
 from Farming import Harvest
+from Game import Game
 
 class Spiel:
     def __init__(self):
@@ -19,8 +20,11 @@ class Spiel:
         self.visible_sprites = Camera()
         self.obstacle_sprites = pygame.sprite.Group()
 
+        self.zahl = 0
         self.inventory = pygame.image.load("./graphics/bio.png").convert_alpha()
-    
+        self.winner = pygame.image.load("./graphics/winner.jpg").convert_alpha()
+        self.floor_surface = pygame.transform.scale(self.winner,(5800,5800))
+
          #sprite setup
         self.create_map()
 
@@ -29,7 +33,7 @@ class Spiel:
 
     def random_spawn(self):
         self.spawn_x = randint(1600,4600)
-        self.spawn_y = randint(1000,4000)
+        self.spawn_y = randint(1100,4000)
 
     def create_map(self):
         layout = {
@@ -83,9 +87,11 @@ class Spiel:
         self.visible_sprites.draw(self.animal)
         self.visible_sprites.draw(self.farm_spawn)
         self.visible_sprites.custom_draw(self.player)
+        self.show_player_level(self.player)
         self.draw_inventory(self.player)
         self.visible_sprites.update()
         self.visible_sprites.collision(self.player,self.animal)
+        self.win(self.player)
 
         debug(self.player.status)
 
@@ -99,6 +105,44 @@ class Spiel:
         self.display_surface.blit(text,(650,690))
 
                 
+    def win(self,player):
+        if player.tamet_animals == 50:
+            self.zahl += 1
+            self.display_surface.blit(self.winner,(400,200))
+            font=pygame.font.SysFont(pygame.font.get_default_font(),50)
+            text=font.render("Dein Highscore:   "f"{player.tamet_animals}",1,pygame.Color("White"))
+            self.display_surface.blit(text,(450,500))
+            font=pygame.font.SysFont(pygame.font.get_default_font(),40)
+            text=font.render("press R to restart the game",1,pygame.Color("White"))
+            self.display_surface.blit(text,(430,550))
+            paused = True
+            while paused and self.zahl > 20:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_r:
+                            print("Unpaused")
+                            paused = False
+                            player.tamet_animals = 0
+        else:
+            return False
+
+    def show_player_level(self, player):
+        if player.level_up_eins and player.level_up_zwei != True: 
+            font=pygame.font.SysFont(pygame.font.get_default_font(),30)
+            text=font.render("Player level:2",1,pygame.Color("Black"))
+            self.display_surface.blit(text,(550,450))
+        elif player.level_up_eins and player.level_up_zwei : 
+            font=pygame.font.SysFont(pygame.font.get_default_font(),30)
+            text=font.render("Player level:3",1,pygame.Color("Black"))
+            self.display_surface.blit(text,(550,450))
+        else:
+            font=pygame.font.SysFont(pygame.font.get_default_font(),30)
+            text=font.render("Player level:1",1,pygame.Color("Black"))
+            self.display_surface.blit(text,(550,450))
+
+    def draw_pause_screen(self):
+        self.screen.blit(self.pause_screen, (0, 0))
+        pygame.display.flip()
 
 class Camera(pygame.sprite.Group):
     def __init__(self):
@@ -114,6 +158,7 @@ class Camera(pygame.sprite.Group):
         self.floor_surface = pygame.image.load("./graphics/Tiled/Map.png").convert_alpha()
         self.floor_surface = pygame.transform.scale(self.floor_surface,(5800,5800))
         self.floor_rect = self.floor_surface.get_rect(topleft =	(TILE_SIZE,TILE_SIZE))
+        
     
     def custom_draw(self,player):
 
@@ -159,7 +204,8 @@ class Camera(pygame.sprite.Group):
                             player.anzahl_obst+=1
                             print("anzahl obst",player.anzahl_obst)
                             object2.fram_index = 0
-                            player.havest = False
+                            player.havest = False#
+
 
 
                     
