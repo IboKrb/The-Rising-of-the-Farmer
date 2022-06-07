@@ -37,7 +37,7 @@ class Spiel:
 
     def random_spawn(self):
         self.spawn_x = randint(1600,4600)
-        self.spawn_y = randint(1100,4000)
+        self.spawn_y = randint(1050,4000)
 
     def create_map(self):
         layout = {
@@ -81,7 +81,7 @@ class Spiel:
             self.animal = Animals((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
     
     def random_flav_spawn(self):
-        for i in range(0,200):
+        for i in range(0,250):
             self.random_spawn()
             self.farm_spawn = Harvest((self.spawn_x,self.spawn_y),[self.visible_sprites],self.obstacle_sprites)
     
@@ -127,6 +127,8 @@ class Spiel:
                             print("Unpaused")
                             paused = False
                             player.tamet_animals = 0
+                            self.timer = 8000
+
         else:
             return False
 
