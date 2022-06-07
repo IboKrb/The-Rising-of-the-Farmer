@@ -21,6 +21,7 @@ class Spiel:
         self.obstacle_sprites = pygame.sprite.Group()
 
         self.zahl = 0
+        self.zahl_lose = 0
         self.inventory = pygame.image.load("./graphics/bio.png").convert_alpha()
         self.winner = pygame.image.load("./graphics/winner.jpg").convert_alpha()
         self.floor_surface = pygame.transform.scale(self.winner,(5800,5800))
@@ -30,6 +31,9 @@ class Spiel:
 
         self.spawn_x = 0
         self.spawn_y = 0
+
+        self.timer = 10000
+
 
     def random_spawn(self):
         self.spawn_x = randint(1600,4600)
@@ -92,8 +96,8 @@ class Spiel:
         self.visible_sprites.update()
         self.visible_sprites.collision(self.player,self.animal)
         self.win(self.player)
+        self.lose_game(self.player)
 
-        debug(self.player.status)
 
     def draw_inventory(self,player):
         self.display_surface.blit(self.inventory,(300,200))
@@ -106,7 +110,7 @@ class Spiel:
 
                 
     def win(self,player):
-        if player.tamet_animals == 50:
+        if player.tamet_animals == 60:
             self.zahl += 1
             self.display_surface.blit(self.winner,(400,200))
             font=pygame.font.SysFont(pygame.font.get_default_font(),50)
@@ -143,6 +147,30 @@ class Spiel:
     def draw_pause_screen(self):
         self.screen.blit(self.pause_screen, (0, 0))
         pygame.display.flip()
+
+    def lose_game(self,player):
+        self.timer -= 1	
+        if self.timer >= 0:
+            font=pygame.font.SysFont(pygame.font.get_default_font(),50)
+            text=font.render("verbliebendezeit:"f"{self.timer}""sekunden",1,pygame.Color("White"))
+            self.display_surface.blit(text,(600,10))
+        if self.timer <= 0:
+            self.zahl_lose += 1
+            font=pygame.font.SysFont(pygame.font.get_default_font(),80)
+            text=font.render("VERLOREN",1,pygame.Color("red"))
+            self.display_surface.blit(text,(450,500))
+            font=pygame.font.SysFont(pygame.font.get_default_font(),40)
+            text=font.render("press R to restart the game",1,pygame.Color("White"))
+            self.display_surface.blit(text,(430,550))
+            paused = True
+            while paused and self.zahl_lose > 20:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_r:
+                            print("Unpaused")
+                            paused = False
+                            player.tamet_animals = 0
+                            self.timer = 10000
 
 class Camera(pygame.sprite.Group):
     def __init__(self):
@@ -188,11 +216,9 @@ class Camera(pygame.sprite.Group):
                     if isinstance(object1, Player) and isinstance(object2,  Animals):
                         if player.anzahl_obst >= 1 and player.feeding:
                             self.zahl+=1
-                            print("collision tier",self.zahl)
                             player.anzahl_obst-=1
                             player.tamet_animals += 1
                             print(player.tamet_animals)	
-                            print("anzahl obst",player.anzahl_obst)
                             object2.rect.top = randint(800,1200)
                             object2.rect.left = randint(800,1200)
 
@@ -202,7 +228,6 @@ class Camera(pygame.sprite.Group):
                     if isinstance(object1, Player) and isinstance(object2, Harvest):
                         if player.havest and object2.fram_index >= 3:
                             player.anzahl_obst+=1
-                            print("anzahl obst",player.anzahl_obst)
                             object2.fram_index = 0
                             player.havest = False#
 

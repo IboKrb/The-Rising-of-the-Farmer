@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
 
         self.direction = pygame.math.Vector2()
         self.speed = 4
-        self.anzahl_obst = 10
+        self.anzahl_obst = 0
 
         self.frame_index = 0
         self.animation_speed = 0.20

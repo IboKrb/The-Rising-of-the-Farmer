@@ -49,7 +49,7 @@ class Animals(pygame.sprite.Sprite):
         self.sound_Wolf.set_volume(0.009)
 
         self.sound_Baren = pygame.mixer.Sound("./audio/Bear.wav")
-        self.sound_Baren.set_volume(0.009)
+        self.sound_Baren.set_volume(0.003)
 
         self.sounds = [self.sound_Wolf, self.sound_Baren, self.sound_sheep]
 
