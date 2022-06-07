@@ -1,9 +1,12 @@
+from re import S
 from turtle import down
 import pygame 
 from Settings import *
 from level import *
 from support import *
 from random import *
+from random import choice
+
 
 class Animals(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites):
@@ -16,15 +19,21 @@ class Animals(pygame.sprite.Sprite):
          
         self.direction = pygame.math.Vector2()
 
+
         self.fram_index = 0
         self.import_animal()
 
+        self.animal_type=""
+
         self.speed= 1
 
+        self.tamecooldown = 0
+        
         self.small_tile_size = 26
         self.big_tile_size = 65
 
         self.tamet = False
+
 
         self.zahlrauf = 0
         self.animation_speed = 0.05
@@ -32,7 +41,18 @@ class Animals(pygame.sprite.Sprite):
         self.randomzahl = 0
         self.dir_player = pygame.math.Vector2()
         self.obstacle_sprites = obstacle_sprites
-    
+
+        self.sound_sheep = pygame.mixer.Sound("./audio/sheep.wav")
+        self.sound_sheep.set_volume(0.009)
+
+        self.sound_Wolf = pygame.mixer.Sound("./audio/Wolf.wav")
+        self.sound_Wolf.set_volume(0.009)
+
+        self.sound_Baren = pygame.mixer.Sound("./audio/Bear.wav")
+        self.sound_Baren.set_volume(0.009)
+
+        self.sounds = [self.sound_Wolf, self.sound_Baren, self.sound_sheep]
+
     def random_animal(self):
         self.animals_path = ["./graphics/sprites_tiere/Schaf/Braun/",
         "./graphics/sprites_tiere/Schaf/Weiss/",
@@ -59,6 +79,13 @@ class Animals(pygame.sprite.Sprite):
             full_path = self.animal_path+animation
             self.animations[animation] = import_folder_layout(full_path)      
             
+    def untame(self):
+        if self.tamet:
+            self.tamecooldown += 1
+        
+        if self.tamecooldown == 2000:
+            self.tamet = False
+            self.tamecooldown = 0
 
     def zahlen(self):
         self.zahlrauf += 1
@@ -75,7 +102,7 @@ class Animals(pygame.sprite.Sprite):
 
     def random_move(self):
         self.random_choice()
-        
+
         if self.randomzahl <= 10 :
             self.direction.x = 1
             self.status = "right"
@@ -87,7 +114,7 @@ class Animals(pygame.sprite.Sprite):
         elif self.randomzahl  >= 21 and self.randomzahl <= 30 :
             self.direction.y = 1
             self.status = "down"
-       
+            
         elif self.randomzahl >= 31 and self.randomzahl <= 40 :
             self.direction.y = -1
             self.status = "up"
@@ -96,6 +123,14 @@ class Animals(pygame.sprite.Sprite):
             self.status = "idle"
             self.direction.x = 0
             self.direction.y = 0
+
+    def playRandom(self):
+        choice(self.sounds).play()
+
+    def sound(self):
+        if self.status == "idle":
+            self.playRandom()
+
 
     def move(self):
         self.random_move()
@@ -111,17 +146,9 @@ class Animals(pygame.sprite.Sprite):
         if self.tamet == False:
             self.move()
         else:
-            self.move_to_player()
+            self.status = "idle"
 
-    def move_to_player(self):
-        if self.dir_player.x > self.direction.x:
-            self.direction.x -= 15
-        elif self.dir_player.x < self.direction.x:
-            self.direction.x += 15
-        if self.dir_player.y > self.direction.y:
-            self.direction.y -= 15
-        elif self.dir_player.y < self.direction.y:
-            self.direction.y += 15
+
 
     def animate(self):
         animation = self.animations[self.status]
@@ -136,9 +163,10 @@ class Animals(pygame.sprite.Sprite):
             self.image =pygame.transform.scale(self.image,(self.small_tile_size,self.small_tile_size))
         elif self.animal_number <= 7:
             self.image = pygame.transform.scale(self.image,(TILE_SIZE,TILE_SIZE))
+            self.animal_type = "Wolfsheep"
         elif self.animal_number == 8 or 9 or 10 or 11:
+            self.animal_type = "Baren"
             self.image = pygame.transform.scale(self.image,(self.big_tile_size,self.big_tile_size))
-
 
     def collision(self,direction):
 
@@ -164,6 +192,9 @@ class Animals(pygame.sprite.Sprite):
     def update(self):
         self.animate()
         self.movement()
+        self.sound()
+        self.untame()
+
     
     def run(self):
         Spiel.visible_sprites.draw(self.display_surface)

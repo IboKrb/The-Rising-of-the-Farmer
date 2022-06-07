@@ -12,8 +12,14 @@ class Player(pygame.sprite.Sprite):
         self.image =pygame.transform.scale(self.image,(Player_size,Player_size))
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-30)
+        
+        
+        self.tamet_animals = 0
 
-    
+
+        self.sound_footsteps = pygame.mixer.Sound("./audio/footstep.wav")
+        self.sound_footsteps.set_volume(0.03)
+
         self.import_player_assets()
         self.status= "down"
 
@@ -21,17 +27,18 @@ class Player(pygame.sprite.Sprite):
 
         self.direction = pygame.math.Vector2()
         self.speed = 4
-        self.anzahl_obst = 0
+        self.anzahl_obst = 10
 
         self.frame_index = 0
         self.animation_speed = 0.20
         self.havest = False
         self.harvesting = False
-        self.cooldown = 2000
+        self.cooldown = 1000
         self.time = None
         self.feeding = False
-
+        self.level_up_eins = False
         self.obstacle_sprites = obstacle_sprites
+        self.level_up_zwei = False
 
     def import_player_assets(self):
         character_path= "./graphics/spritemaps/Char/"
@@ -44,23 +51,37 @@ class Player(pygame.sprite.Sprite):
             full_path = character_path+animation
             self.animations[animation] = import_folder_layout(full_path)
 
+    def level_up(self):
+        if self.tamet_animals >= 5 and self.level_up_eins == False :
+            self.speed += 4
+            self.level_up_eins= True
+        elif self.tamet_animals >= 20 and self.level_up_zwei == False:
+            self.speed += 4
+            self.level_up_zwei = True
+
     def input(self):
         pressed = pygame.key.get_pressed() 
         if pressed[pygame.K_LEFT]:
             self.direction.x = -1
             self.status = "left"
+            self.sound_footsteps.play()
         elif pressed[pygame.K_RIGHT]:
             self.direction.x = 1
             self.status	= "right"
+            self.sound_footsteps.play()
         elif pressed[pygame.K_UP]:
             self.direction.y = -1
             self.status = "up"
+            self.sound_footsteps.play()
+
         elif pressed[pygame.K_DOWN]:
             self.direction.y = 1
             self.status = "down"
+            self.sound_footsteps.play()
         else:
             self.direction.x = 0
             self.direction.y = 0
+            self.sound_footsteps.stop()
 
         #harvesting
         if pressed[pygame.K_SPACE]and not self.harvesting:
@@ -176,7 +197,7 @@ class Player(pygame.sprite.Sprite):
         self.cooldonws()
         self.get_status()
         self.animate()
-
+        self.level_up()
         
     def run(self):
         Spiel.visible_sprites.draw(self.display_surface)

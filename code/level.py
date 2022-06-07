@@ -19,6 +19,7 @@ class Spiel:
         self.visible_sprites = Camera()
         self.obstacle_sprites = pygame.sprite.Group()
 
+        self.inventory = pygame.image.load("./graphics/bio.png").convert_alpha()
     
          #sprite setup
         self.create_map()
@@ -82,11 +83,20 @@ class Spiel:
         self.visible_sprites.draw(self.animal)
         self.visible_sprites.draw(self.farm_spawn)
         self.visible_sprites.custom_draw(self.player)
+        self.draw_inventory(self.player)
         self.visible_sprites.update()
-        self.visible_sprites.collision(self.player)
+        self.visible_sprites.collision(self.player,self.animal)
 
-        #self.collision()
         debug(self.player.status)
+
+    def draw_inventory(self,player):
+        self.display_surface.blit(self.inventory,(300,200))
+        font=pygame.font.SysFont(pygame.font.get_default_font(),50)
+        text=font.render(f"{player.anzahl_obst}",1,pygame.Color("Black"))
+        self.display_surface.blit(text,(1050,690))
+        font=pygame.font.SysFont(pygame.font.get_default_font(),50)
+        text=font.render("gezähmtetiere:   "f"{player.tamet_animals}",1,pygame.Color("Black"))
+        self.display_surface.blit(text,(650,690))
 
                 
 
@@ -101,7 +111,7 @@ class Camera(pygame.sprite.Group):
         self.zahl = 0
         self.dirvect = pygame.math.Vector2()
         #creating the floor
-        self.floor_surface = pygame.image.load("./graphics/Tiled/Map.png").convert()
+        self.floor_surface = pygame.image.load("./graphics/Tiled/Map.png").convert_alpha()
         self.floor_surface = pygame.transform.scale(self.floor_surface,(5800,5800))
         self.floor_rect = self.floor_surface.get_rect(topleft =	(TILE_SIZE,TILE_SIZE))
     
@@ -114,6 +124,7 @@ class Camera(pygame.sprite.Group):
         floor_offset_pos =self.floor_rect.topleft - self.offset
         self.display_surface.blit(self.floor_surface,floor_offset_pos)
 
+
         #draw sprites
         for sprite in sorted(self.sprites(),key=lambda sprite:sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
@@ -124,7 +135,7 @@ class Camera(pygame.sprite.Group):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
 
-    def collision(self,player):
+    def collision(self,player,animal):
         self.object = self.sprites()        
         for i, object1 in enumerate(self.object):
             for object2 in self.object[i+1:]:
@@ -134,7 +145,12 @@ class Camera(pygame.sprite.Group):
                             self.zahl+=1
                             print("collision tier",self.zahl)
                             player.anzahl_obst-=1
+                            player.tamet_animals += 1
+                            print(player.tamet_animals)	
                             print("anzahl obst",player.anzahl_obst)
+                            object2.rect.top = randint(800,1200)
+                            object2.rect.left = randint(800,1200)
+
                             object2.tamet = True
                             object2.dir_player = player.direction
 
@@ -144,5 +160,6 @@ class Camera(pygame.sprite.Group):
                             print("anzahl obst",player.anzahl_obst)
                             object2.fram_index = 0
                             player.havest = False
+
 
                     
